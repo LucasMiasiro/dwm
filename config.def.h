@@ -4,6 +4,7 @@
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int gappx     = 9;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
@@ -32,9 +33,11 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
+	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
+	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
 /* layout(s) */
@@ -66,21 +69,24 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *dmenuhistorycmd[] = { "bash", "/home/raccoon/Software/dmenu/dmenu_run_history",
                                         "-m", dmenumon, "-fn", dmenufont, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *filecmd[]  = { "st", "-e", "lf", NULL };
 static const char *lockcmd[]  = { "betterlockscreen", "-l", "blur", "-t", "Insert Password", NULL};
 static const char *printcmd[]  = { "gnome-screenshot", "-i", NULL};
 static const char *volraisecmd[]  = { "pactl", "set-sink-volume", "0", "+5%", NULL};
 static const char *vollowercmd[]  = { "pactl", "set-sink-volume", "0", "-5%", NULL};
-static const char *volmutecmd[]  = { "pactl", "set-sink-mute", "0", "toggle", NULL};
+static const char *mutecmd[]  = { "pactl", "set-sink-mute", "0", "toggle", NULL};
+
 #include <X11/XF86keysym.h>
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenuhistorycmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_w,      spawn,          {.v = filecmd } },
 	{ 0,                            XK_Print,  spawn,          {.v = printcmd } },
 	{ 0,            XF86XK_AudioRaiseVolume,   spawn,          {.v = volraisecmd } },
 	{ 0,            XF86XK_AudioLowerVolume,   spawn,          {.v = vollowercmd } },
-	{ 0,                    XF86XK_AudioMute,  spawn,          {.v = volmutecmd } },
+	{ 0,                    XF86XK_AudioMute,  spawn,          {.v = mutecmd } },
 	{ MODKEY|ShiftMask,             XK_x,      spawn,          {.v = lockcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
