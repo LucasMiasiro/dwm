@@ -2118,9 +2118,16 @@ void
 togglefullscreen(const Arg *arg)
 {   
     Arg a = {.v = &layouts[0]};
-    setlayout((selmon->lt[selmon->sellt] == arg->v) ? &a : arg);
     Arg arg3 = {0};
-    togglebar(&arg3);
+    if (selmon->lt[selmon->sellt] == arg->v){
+        setlayout(&a);
+        if (!selmon->showbar)
+            togglebar(&arg3);
+    } else {
+        setlayout(arg);
+        if (selmon->showbar)
+            togglebar(&arg3);
+    }
 }
 
 void
