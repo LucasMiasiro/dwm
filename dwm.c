@@ -271,6 +271,7 @@ static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void togglefullscreen(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmanagealtbar(Window w);
@@ -2111,6 +2112,15 @@ toggleview(const Arg *arg)
 		focus(NULL);
 		arrange(selmon);
 	}
+}
+
+void
+togglefullscreen(const Arg *arg)
+{   
+    Arg a = {.v = &layouts[0]};
+    setlayout((selmon->lt[selmon->sellt] == arg->v) ? &a : arg);
+    Arg arg3 = {0};
+    togglebar(&arg3);
 }
 
 void
